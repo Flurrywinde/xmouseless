@@ -170,9 +170,10 @@ void *move_forever(void *val) {
                           (float) mouseinfo.speed_y * speed / move_rate);
         }
         /* scroll? */
+		/* Kanon added: * speed / default_speed . Hack to make modifier keys work with scrolling too but leave the scroll speed figures in config.h the same */
         if (scrollinfo.speed_x != 0 || scrollinfo.speed_y != 0) {
-            scroll((float) scrollinfo.speed_x / move_rate,
-                   (float) scrollinfo.speed_y / move_rate);
+            scroll((float) scrollinfo.speed_x * speed / default_speed / move_rate,
+                   (float) scrollinfo.speed_y * speed / default_speed / move_rate);
         }
         usleep(1000000 / move_rate);
     }
@@ -215,14 +216,6 @@ void handle_key(KeyCode keycode, Bool is_press) {
             int sign = is_press ? 1 : -1;
             scrollinfo.speed_x += sign * scroll_bindings[i].x;
             scrollinfo.speed_y += sign * scroll_bindings[i].y;
-
-            /* scroll once, workaround for scrolling not working the first time */
-            int scroll_x, scroll_y = 0;
-            if (scrollinfo.speed_x < 0) scroll_x = -1;
-            if (scrollinfo.speed_x > 0) scroll_x = 1;
-            if (scrollinfo.speed_y < 0) scroll_y = -1;
-            if (scrollinfo.speed_y > 0) scroll_y = 1;
-            scroll(scroll_x, scroll_y);
         }
     }
 
